@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação Significado das Cores</title>
+    <style>
+        /* Configurações básicas da página */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000; /* Fundo preto como base */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Evita barras de rolagem */
+            font-family: sans-serif;
+        }
+
+        /* --- CAMADA DE FUNDO DESFOCADO --- */
+        .bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 0; /* Fica atrás de tudo */
+        }
+
+        .bg-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Preenche a tela inteira */
+            filter: blur(30px) brightness(0.4); /* Desfoque e escurecimento */
+            transform: scale(1.1); /* Evita bordas brancas por causa do desfoque */
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .bg-slide.active {
+            opacity: 1;
+        }
+
+        /* --- CAMADA DE IMAGENS PRINCIPAIS --- */
+        .slideshow-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1; /* Fica na frente do fundo desfocado */
+        }
+
+        /* Estilo das imagens principais */
+        .slide {
+            position: absolute;
+            max-width: 100vw;
+            max-height: 100vh;
+            object-fit: contain; /* Garante que a imagem inteira apareça sem distorcer */
+            opacity: 0; /* Começa invisível */
+            transition: opacity 1.5s ease-in-out; /* Efeito de desolver (1.5 segundos) */
+            pointer-events: none; /* Evita que clique na imagem sem querer */
+            box-shadow: 0 0 30px rgba(0,0,0,0.8); /* Sombra para destacar a imagem do fundo */
+        }
+
+        /* A classe 'active' faz a imagem ficar visível */
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* --- BOTÃO DE TELA CHEIA --- */
+        #fullscreen-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: 1px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 14px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #fullscreen-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* 
+           CORREÇÃO AQUI: 
+           Esconde o botão quando a tag <html> estiver em tela cheia 
+        */
+        html:fullscreen #fullscreen-btn,
+        html:-webkit-full-screen #fullscreen-btn {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botão de Tela Cheia (Some quando entra em tela cheia) -->
+    <button id="fullscreen-btn">⛶ Tela Cheia</button>
+
+    <!-- Camada de Fundo Desfocado -->
+    <div class="bg-container">
+        <img src="imagem1.jpg" class="bg-slide active" alt="">
+        <img src="imagem2.jpg" class="bg-slide" alt="">
+        <img src="imagem3.jpg" class="bg-slide" alt="">
+        <img src="imagem4.jpg" class="bg-slide" alt="">
+        <img src="imagem5.jpg" class="bg-slide" alt="">
+        <img src="imagem6.jpg" class="bg-slide" alt="">
+        <img src="imagem7.jpg" class="bg-slide" alt="">
+        <img src="imagem8.jpg" class="bg-slide" alt="">
+    </div>
+
+    <!-- Container das Imagens Principais -->
+    <div class="slideshow-container">
+        <img src="imagem1.jpg" class="slide active" alt="Capa Significado das Cores">
+        <img src="imagem2.jpg" class="slide" alt="Corda Branca">
+        <img src="imagem3.jpg" class="slide" alt="Corda Azul-Claro">
+        <img src="imagem4.jpg" class="slide" alt="Corda Amarelo">
+        <img src="imagem5.jpg" class="slide" alt="Corda Azul-Escuro">
+        <img src="imagem6.jpg" class="slide" alt="Corda Verde">
+        <img src="imagem7.jpg" class="slide" alt="Corda Marrom">
+        <img src="imagem8.jpg" class="slide" alt="Corda Vermelho">
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const bgSlides = document.querySelectorAll('.bg-slide');
+        let currentSlide = 0;
+        const slideInterval = 5000; // 5 segundos
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            bgSlides[currentSlide].classList.remove('active');
+            
+            currentSlide = (currentSlide + 1) % slides.length;
+            
+            slides[currentSlide].classList.add('active');
+            bgSlides[currentSlide].classList.add('active');
+        }
+
+        setInterval(nextSlide, slideInterval);
+
+        // Lógica do Botão de Tela Cheia
+        const fsBtn = document.getElementById('fullscreen-btn');
+        
+        fsBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Erro ao tentar entrar em tela cheia: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
